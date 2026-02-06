@@ -101,10 +101,11 @@ static int cmd_help(char *args) {
 }
 
 static int cmd_info(char *args) {
-  char *arg = strtok(args, " ");
-  if (args == NULL) {
+   if (args == NULL) {
     printf(" info [r][w] used to show values of [r]gister or [w]atchpoint \n");
-  } else if (strcmp(arg, "r") == 0) {
+  }  
+  char *arg = strtok(args, " ");
+  if (strcmp(arg, "r") == 0) {
     isa_reg_display();
   } else if (strcmp(arg, "w") == 0) {
     printf("info w is under developing \n");
@@ -113,14 +114,12 @@ static int cmd_info(char *args) {
 }
 
 static int cmd_p(char *args) {
-  char *arg = strtok(args, " ");
-  bool success = true;
-  word_t val = 0;
-  if (arg == NULL) {
-    success = false;
-  } else {
-    val = expr(arg, &success);
+  if (args == NULL) {
+    printf("p expr to calculate this expr into values \n");
+    return 0;
   }
+  bool success = true;
+  word_t val = expr(args, &success);
 
   if (success) {
     printf(FMT_WORD "\n", val);
