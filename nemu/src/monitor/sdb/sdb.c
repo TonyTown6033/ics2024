@@ -54,6 +54,12 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
+static int cmd_info(char *args);
+
+static int cmd_p(char *args) {
+  return -1;
+}
+
 // 命令表：name/description/handler
 static struct {
   const char *name;
@@ -63,6 +69,8 @@ static struct {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
+  { "info", "Get the value of registers(include PC)", cmd_info},
+  { "p", "print the value of the expression", cmd_p},
 
   /* TODO: Add more commands */
 
@@ -92,6 +100,19 @@ static int cmd_help(char *args) {
   }
   return 0;
 }
+
+static int cmd_info(char *args) {
+  char *arg = strtok(args, " ");
+  if (args == NULL) {
+    printf(" info [r][w] used to show values of [r]gister or [w]atchpoint \n");
+  } else if (strcmp(arg, "r") == 0) {
+    isa_reg_display();
+  } else if (strcmp(arg, "w") == 0) {
+    printf("info w is under developing \n");
+  }
+  return 0;
+}
+
 
 void sdb_set_batch_mode() {
   // 批处理模式：直接执行 c 命令，不进入交互
