@@ -54,6 +54,7 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
+// 命令表：name/description/handler
 static struct {
   const char *name;
   const char *description;
@@ -93,10 +94,12 @@ static int cmd_help(char *args) {
 }
 
 void sdb_set_batch_mode() {
+  // 批处理模式：直接执行 c 命令，不进入交互
   is_batch_mode = true;
 }
 
 void sdb_mainloop() {
+  // 主循环：读命令、解析参数、分发到 handler
   if (is_batch_mode) {
     cmd_c(NULL);
     return;

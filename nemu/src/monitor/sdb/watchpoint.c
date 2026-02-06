@@ -25,10 +25,13 @@ typedef struct watchpoint {
 
 } WP;
 
+// 监视点池：数组 + 空闲链表
 static WP wp_pool[NR_WP] = {};
+// head: 已用链表；free_: 空闲链表
 static WP *head = NULL, *free_ = NULL;
 
 void init_wp_pool() {
+  // 初始化空闲链表
   int i;
   for (i = 0; i < NR_WP; i ++) {
     wp_pool[i].NO = i;

@@ -18,16 +18,19 @@
 
 #include <common.h>
 
+// CPU 状态：通用寄存器 + PC
 typedef struct {
   word_t gpr[MUXDEF(CONFIG_RVE, 16, 32)];
   vaddr_t pc;
 } MUXDEF(CONFIG_RV64, riscv64_CPU_state, riscv32_CPU_state);
 
 // decode
+// 指令译码信息：保存当前指令原始编码
 typedef struct {
   uint32_t inst;
 } MUXDEF(CONFIG_RV64, riscv64_ISADecodeInfo, riscv32_ISADecodeInfo);
 
+// MMU 检查：RISC-V 这里默认直接地址
 #define isa_mmu_check(vaddr, len, type) (MMU_DIRECT)
 
 #endif

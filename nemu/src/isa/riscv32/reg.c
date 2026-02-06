@@ -14,6 +14,7 @@
 ***************************************************************************************/
 
 #include <isa.h>
+#include <sys/types.h>
 #include "local-include/reg.h"
 
 const char *regs[] = {
@@ -24,8 +25,32 @@ const char *regs[] = {
 };
 
 void isa_reg_display() {
+  printf("pc = " FMT_WORD "\n", cpu.pc);
+  for (int i = 0; i < 32; i++) {
+      printf("%s = " FMT_WORD "\n", reg_name(i), gpr(i));
+  }
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
-  return 0;
+  word_t val = 0;
+  *success = false;
+  
+  if (strcmp(s, "pc") == 0) {
+    *success = true;
+    return cpu.pc;
+  }
+
+  for (int i = 0; i < 32; i++) {
+    if (strcmp(s, reg_name(i)) == 0) {
+        *success = true;
+        val = gpr(i);
+        break;
+    }
+  }
+
+  if (!*success) {
+    printf("%s not successful \n", __func__);
+  }
+
+  return val;
 }
