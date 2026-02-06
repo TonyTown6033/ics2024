@@ -17,6 +17,7 @@
 #include <cpu/cpu.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <string.h>
 #include "sdb.h"
 
 static int is_batch_mode = false;
@@ -56,9 +57,7 @@ static int cmd_help(char *args);
 
 static int cmd_info(char *args);
 
-static int cmd_p(char *args) {
-  return -1;
-}
+static int cmd_p(char *args); 
 
 // 命令表：name/description/handler
 static struct {
@@ -112,6 +111,25 @@ static int cmd_info(char *args) {
   }
   return 0;
 }
+
+static int cmd_p(char *args) {
+  char *arg = strtok(args, " ");
+  bool success = true;
+  word_t val = 0;
+  if (arg == NULL) {
+    success = false;
+  } else {
+    val = expr(arg, &success);
+  }
+
+  if (success) {
+    printf(FMT_WORD "\n", val);
+  } else {
+    printf("Here is error happened when calculate \n");
+  }
+  return 0;
+}
+
 
 
 void sdb_set_batch_mode() {
