@@ -31,7 +31,11 @@ int expr_test() {
     bool success = true;
     word_t val = expr(expr_str, &success);
 
-    if (!success) continue;
+    if (!success){
+      ok++;
+      continue;
+    } 
+
     if (val != expected) {
       printf("Mismatch: expr=%s expected=%u actual=" FMT_WORD "\n",
              expr_str, expected, val);
