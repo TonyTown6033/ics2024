@@ -32,7 +32,7 @@ int expr_test() {
       printf("Mismatch: expr=%s expected=%u actual=" FMT_WORD "\n",
              expr_str, expected, val);
       fclose(fp);
-      return 1;
+      continue;
     }
   }
   fclose(fp);
