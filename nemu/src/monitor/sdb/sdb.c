@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "sdb.h"
+#include <memory/vaddr.h>
 
 static int is_batch_mode = false;
 
@@ -144,8 +145,41 @@ static int cmd_p(char *args) {
   return 0;
 }
 
-static int cmd_x(char *arg) {
-  return -1;
+static int cmd_x(char *args) {
+  if (args == NULL) {
+    printf("usage: x N EXPR \n");
+    return 0;
+  }
+  while(isspace((unsigned char) *args)) args++;
+  if (*args == '\0') {
+    printf("usage: x N EXPR \n");
+    return 0;
+  }
+  char *end = NULL;
+  unsigned long n = strtoul(args, &end, 10);
+  if (end == args || n == 0 || *args == '-') {
+    printf("usage: x N EXPR \n");
+    return 0;
+  }
+  while(isspace((unsigned char) *end)) end++;
+  if (*end == '\0') {
+    printf("usage: x N EXPR \n");
+    return 0;
+  }
+  bool success = true;
+  word_t addr = expr(end, &success);
+  if (!success) {
+    printf("bad EXPR: %s \n", end);
+    return 0;
+  }
+
+  for(size_t i = 0; i < n; i++) {
+    vaddr_t cur = addr + i * 4;
+    word_t data = vaddr_read(cur, 4);
+    printf(FMT_WORD ": " FMT_WORD "\n", cur,data);
+  }
+
+  return 0;
 }
 
 static int cmd_d(char *arg) {
