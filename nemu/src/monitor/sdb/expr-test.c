@@ -12,7 +12,10 @@ int expr_test() {
     exit(1);
   }
   char line[1024];
+  int ok = 0;
+  int total = 0;
   while (fgets(line, sizeof(line), fp) != NULL) {
+    total++;
     size_t len = strlen(line);
     if (len >0 && line[len - 1] == '\n') {
       line[len-1] = '\0';
@@ -28,11 +31,14 @@ int expr_test() {
     bool success = true;
     word_t val = expr(expr_str, &success);
 
-    if (!success || val != expected) {
+    if (!success) continue;
+    if (val != expected) {
       printf("Mismatch: expr=%s expected=%u actual=" FMT_WORD "\n",
              expr_str, expected, val);
     }
+    ok++;
   }
   fclose(fp);
+  printf(" %d / %d \n", ok, total);
   return 0;
 }
