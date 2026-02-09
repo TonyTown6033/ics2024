@@ -17,6 +17,7 @@
 #include <cpu/cpu.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <stdio.h>
 #include <string.h>
 #include "sdb.h"
 
@@ -59,6 +60,14 @@ static int cmd_info(char *args);
 
 static int cmd_p(char *args); 
 
+static int cmd_si(char *args); 
+
+static int cmd_x(char *args); 
+
+static int cmd_w(char *args); 
+
+static int cmd_d(char *args); 
+
 // 命令表：name/description/handler
 static struct {
   const char *name;
@@ -69,7 +78,12 @@ static struct {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
   { "info", "Get the value of registers(include PC)", cmd_info},
-  { "p", "print the value of the expression", cmd_p},
+  { "p", "Print the value of the expression", cmd_p},
+  { "si", "Let program run x step then stop execution, when x is not given x = 1", cmd_si},
+  { "x", "Calculate the value of the EXPR, set the result as the memory address,  \
+          print the continus 4 Bytes in this memory address", cmd_x},
+  { "w", "Stop the program when EXPR changes", cmd_w},
+  { "d", "Delete the watch point which order is n", cmd_d},
 
   /* TODO: Add more commands */
 
@@ -130,7 +144,36 @@ static int cmd_p(char *args) {
   return 0;
 }
 
+static int cmd_x(char *arg) {
+  return -1;
+}
 
+static int cmd_d(char *arg) {
+  return -1;
+}
+
+static int cmd_w(char *arg) {
+  return -1;
+}
+
+static int cmd_si(char *args) {
+  uint64_t n = 1;
+  if (args != NULL) {
+    char *arg = strtok(args, " ");
+    if (arg != NULL) {
+      char *end = NULL;
+      unsigned long v = (uint64_t) strtoul(arg, &end, 10);
+      if (end == arg || *end != '\0' || arg[0] == '-') {
+        printf("usage: si [N] (N is positive integer) \n");
+        return 0;
+      }
+      n = (uint64_t) v;
+    }
+  }
+  // cpu_exec 对n进行了校验
+  cpu_exec(n);
+  return 0;
+}
 
 void sdb_set_batch_mode() {
   // 批处理模式：直接执行 c 命令，不进入交互
