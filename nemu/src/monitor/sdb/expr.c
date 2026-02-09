@@ -79,12 +79,13 @@ void init_regex() {
     }
   }
 }
+#define MAX_TOKEN 1024
 typedef struct token {
   int type;
   char str[32];
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {};
+static Token tokens[MAX_TOKEN] __attribute__((used)) = {};
 static int nr_token __attribute__((used)) = 0;
 
 /* 词法分析主循环：逐位置匹配 rules 并生成 tokens */
@@ -96,6 +97,7 @@ static bool make_token(char *e) {
   nr_token = 0;
 
   while (e[position] != '\0') {
+    if (nr_token >= MAX_TOKEN) return false;
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i++) {
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 &&
