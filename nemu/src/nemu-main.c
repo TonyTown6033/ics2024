@@ -20,6 +20,8 @@ void am_init_monitor();
 void engine_start();
 int is_exit_status_bad();
 
+extern int expr_test(void);
+
 int main(int argc, char *argv[]) {
   /* Initialize the monitor. */
 #ifdef CONFIG_TARGET_AM
@@ -27,6 +29,9 @@ int main(int argc, char *argv[]) {
 #else
   init_monitor(argc, argv);
 #endif
+
+  // test 
+  expr_test();
 
   /* Start engine. */
   engine_start();

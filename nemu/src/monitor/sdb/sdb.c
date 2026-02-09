@@ -103,6 +103,7 @@ static int cmd_help(char *args) {
 static int cmd_info(char *args) {
    if (args == NULL) {
     printf(" info [r][w] used to show values of [r]gister or [w]atchpoint \n");
+    return 0;
   }  
   char *arg = strtok(args, " ");
   if (strcmp(arg, "r") == 0) {
