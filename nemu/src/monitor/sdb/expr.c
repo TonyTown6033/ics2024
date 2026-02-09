@@ -87,6 +87,7 @@ typedef struct token {
 
 static Token tokens[MAX_TOKEN] __attribute__((used)) = {};
 static int nr_token __attribute__((used)) = 0;
+static const char *expr_input = NULL;
 
 /* 词法分析主循环：逐位置匹配 rules 并生成 tokens */
 static bool make_token(char *e) {
@@ -97,7 +98,10 @@ static bool make_token(char *e) {
   nr_token = 0;
 
   while (e[position] != '\0') {
-    if (nr_token >= MAX_TOKEN) return false;
+    if (nr_token >= MAX_TOKEN) {
+      printf("Too many tokens (max %d) in expression: %s\n", MAX_TOKEN, e);
+      return false;
+    }
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i++) {
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 &&
@@ -238,6 +242,7 @@ static word_t eval(int l, int r, bool *success) {
   if (!*success) return ERROR;
   if (l > r) {
     *success = false;
+    printf("Bad expression: empty range [%d,%d] in expr: %s\n", l, r, expr_input ? expr_input : "<null>");
     return ERROR;
   }
   word_t val = ERROR;
@@ -249,12 +254,17 @@ static word_t eval(int l, int r, bool *success) {
         val = isa_reg_str2val(tokens[l].str+1, success);
         if (!*success) return ERROR;
         return val;
+      default:
+        *success = false;
+        printf("Unexpected token type %d at position %d in expr: %s\n", tokens[l].type, l, expr_input ? expr_input : "<null>");
+        return ERROR;
     }
   }
   if (check_parentheses(l,r)) return eval(l+1, r-1, success);
   int op = dominant_op(l,r);
   if (op == -1) {
     *success = false;
+    printf("No dominant operator in range [%d,%d] for expr: %s\n", l, r, expr_input ? expr_input : "<null>");
     return ERROR;
   }
   if (tokens[op].type == TK_NEG) {
@@ -277,8 +287,9 @@ static word_t eval(int l, int r, bool *success) {
     case '*':
       return val1 * val2;
     case '/':
-      if (val2 ==0) {
+      if (val2 == 0) {
         *success = false;
+        printf("Division by zero in expr: %s\n", expr_input ? expr_input : "<null>");
         return ERROR;
       }
       return val1 / val2;
@@ -292,6 +303,7 @@ static word_t eval(int l, int r, bool *success) {
       return val1 || val2;
     default:
       *success = false;
+      printf("Unknown operator type %d in expr: %s\n", tokens[op].type, expr_input ? expr_input : "<null>");
   }
   return ERROR;
 }
@@ -299,6 +311,7 @@ static word_t eval(int l, int r, bool *success) {
 
 word_t expr(char *e, bool *success) {
   // 先做分词，失败直接返回
+  expr_input = e;
   if (!make_token(e)) {
     *success = false;
     return 0;
