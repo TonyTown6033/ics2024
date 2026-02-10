@@ -9,4 +9,7 @@
 !README.md
 !.gitignore
 !init.sh
+!.gitattributes
+!/docker-images/
+!/docker-images/*.tar
 /fceux-am
