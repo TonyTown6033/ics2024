@@ -124,7 +124,7 @@ static int cmd_info(char *args) {
   if (strcmp(arg, "r") == 0) {
     isa_reg_display();
   } else if (strcmp(arg, "w") == 0) {
-    printf("info w is under developing \n");
+    wp_list();
   }
   return 0;
 }
@@ -182,12 +182,39 @@ static int cmd_x(char *args) {
   return 0;
 }
 
-static int cmd_d(char *arg) {
-  return -1;
+static int cmd_d(char *args) {
+  if (args == NULL) {
+    printf("usage: d No \n");
+    return 0;
+  }
+  while (isspace((unsigned char) *args)) args++;
+  if (*args == '\0') {
+    printf("usage: d No \n");
+    return 0;
+  }
+  char *end = NULL;
+  unsigned long n = strtoul(args, &end, 10);
+  if (end == args || n == 0 || *args == '-') {
+    printf("useage: x N EXPR \n");
+    return 0;
+  }
+  bool success = wp_remove((int) n);
+  if (!success) {
+    printf("remove watch point falied, no %lu \n", n);
+  }
+
+  return 0;
 }
 
-static int cmd_w(char *arg) {
-  return -1;
+static int cmd_w(char *args) {
+  if (args == NULL) {
+    printf("usage: w EXPR \n");
+    return 0;
+  }
+  if (!wp_add((const char *) args)) {
+    printf("add watch point failed, args is %s \n", args);
+  }
+  return 0;
 }
 
 static int cmd_si(char *args) {
