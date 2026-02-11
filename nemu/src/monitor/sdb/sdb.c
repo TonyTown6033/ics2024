@@ -194,8 +194,8 @@ static int cmd_d(char *args) {
   }
   char *end = NULL;
   unsigned long n = strtoul(args, &end, 10);
-  if (end == args || n == 0 || *args == '-') {
-    printf("useage: x N EXPR \n");
+  if (end == args || *args == '-') {
+    printf("useage: d N \n");
     return 0;
   }
   bool success = wp_remove((int) n);
