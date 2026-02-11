@@ -12,4 +12,18 @@
 *
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
-#include <monitor/sdb.h>
+
+#ifndef __SDB_H__
+#define __SDB_H__
+
+#include <common.h>
+
+// 表达式求值：对输入字符串求值
+word_t expr(char *e, bool *success);
+
+bool wp_add(const char *expr_str);
+bool wp_remove(int no);
+void wp_list();
+bool check_wp();
+
+#endif

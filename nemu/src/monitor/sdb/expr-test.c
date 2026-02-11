@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "sdb.h"
+#include <monitor/sdb.h>
 
 int expr_test() {
   char *path = getenv("EXPR_TEST_FILE");

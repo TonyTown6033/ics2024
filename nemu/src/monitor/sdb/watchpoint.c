@@ -13,7 +13,7 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
-#include "sdb.h"
+#include <monitor/sdb.h>
 
 #define NR_WP 32
 #define EXPR_MAX 65536
