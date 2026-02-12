@@ -13,3 +13,4 @@
 !/docker-images/
 !/docker-images/*.tar
 /fceux-am
+/am-kernels
