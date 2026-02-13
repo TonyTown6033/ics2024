@@ -77,9 +77,11 @@ static void execute(uint64_t n) {
   for (;n > 0; n --) {
     exec_once(&s, cpu.pc);
     g_nr_guest_inst ++;
+#ifndef CONFIG_TARGET_AM
     if (nemu_state.state == NEMU_RUNNING &&  check_wp() ) {
        nemu_state.state = NEMU_STOP;
     }    
+#endif
     trace_and_difftest(&s, cpu.pc);
     if (nemu_state.state != NEMU_RUNNING) break;
     IFDEF(CONFIG_DEVICE, device_update());
